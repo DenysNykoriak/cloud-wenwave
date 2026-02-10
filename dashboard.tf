@@ -61,3 +61,13 @@ resource "aws_cloudfront_distribution" "dashboard" {
     }
   }
 }
+
+resource "aws_s3_object" "dashboard_file" {
+  for_each = fileset("dashboard/dist", "**/*")
+
+  bucket       = aws_s3_bucket.dashboard.id
+  key          = each.value
+  source       = "dashboard/dist/${each.value}"
+  etag         = filemd5("dashboard/dist/${each.value}")
+  content_type = lookup(local.dashboard_content_types, try(regex("\\.[^.]+$", each.value), ""), "application/octet-stream")
+}
