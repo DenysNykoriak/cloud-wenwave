@@ -1,22 +1,20 @@
-import { createRootRoute, Outlet, Link } from "@tanstack/react-router";
-import { AppShell, Button, Group, Title } from "@mantine/core";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { AppShell } from "@mantine/core";
+import AuthProvider from "../modules/auth/AuthProvider";
+import Header from "../modules/common/Header";
 
 function RootComponent() {
 	return (
-		<AppShell header={{ height: 56 }} padding="md">
-			<AppShell.Header>
-				
-				<Group justify="space-between" h="100%" px="md">
-        <Title order={2}>Dashboard</Title>
-					<Button component={Link} to="/account" variant="filled">
-						Sign in
-					</Button>
-				</Group>
-			</AppShell.Header>
-			<AppShell.Main>
-				<Outlet />
-			</AppShell.Main>
-		</AppShell>
+		<AuthProvider>
+			<AppShell header={{ height: 56 }} padding="md">
+				<AppShell.Header>
+					<Header />
+				</AppShell.Header>
+				<AppShell.Main>
+					<Outlet />
+				</AppShell.Main>
+			</AppShell>
+		</AuthProvider>
 	);
 }
 
