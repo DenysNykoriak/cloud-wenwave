@@ -1,8 +1,11 @@
+# I would make 2 workflows, one for staging and one for prod
+# But this is pet project so I'll use just staging
+
 name: Staging
 
 on:
   push:
-    branches: [staging]
+    branches: [main]
 
 jobs:
   build-and-deploy:
