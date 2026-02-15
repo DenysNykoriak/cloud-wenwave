@@ -1,0 +1,55 @@
+name: Staging
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun (dashboard)
+        uses: oven-sh/setup-bun@v2
+
+      - name: Build dashboard
+        working-directory: dashboard
+        env:
+          VITE_OIDC_AUTHORITY: ${{ secrets.DASHBOARD_VITE_OIDC_AUTHORITY }}
+          VITE_OIDC_CLIENT_ID: ${{ secrets.DASHBOARD_VITE_OIDC_CLIENT_ID }}
+          VITE_OIDC_REDIRECT_URI: ${{ secrets.DASHBOARD_VITE_OIDC_REDIRECT_URI }}
+          VITE_API_URL: ${{ secrets.DASHBOARD_VITE_API_URL }}
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Setup Node (server)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Build server
+        working-directory: server
+        run: |
+          npm ci
+          npm run build
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        working-directory: iac/staging
+        run: terraform init
+
+      - name: Terraform apply
+        working-directory: iac/staging
+        run: terraform apply -auto-approve
