@@ -1,6 +1,13 @@
-import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	redirect,
+	Outlet,
+	useNavigate,
+} from "@tanstack/react-router";
 import { UserManager } from "oidc-client-ts";
 import { oidcConfig } from "../modules/auth/oidcConfig";
+import { useAuth } from "react-oidc-context";
+import { useEffect } from "react";
 
 const checkAuth = async (): Promise<boolean> => {
 	try {
@@ -13,6 +20,22 @@ const checkAuth = async (): Promise<boolean> => {
 };
 
 function AuthenticatedLayout() {
+	const { user } = useAuth();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!user) {
+			navigate({
+				to: "/",
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [!!user]);
+
+	if (!user) {
+		return null;
+	}
+
 	return <Outlet />;
 }
 

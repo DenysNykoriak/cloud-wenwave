@@ -4,7 +4,7 @@ import { LogOut, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 const Header = () => {
-	const { signinRedirect, signoutRedirect, user } = useAuth();
+	const { signinRedirect, signoutSilent, user } = useAuth();
 
 	return (
 		<Group justify="space-between" h="100%" px="md">
@@ -43,9 +43,7 @@ const Header = () => {
 							color="red"
 							leftSection={<LogOut size={14} />}
 							onClick={() => {
-								signoutRedirect({
-									post_logout_redirect_uri: window.location.origin,
-								});
+								signoutSilent({});
 							}}>
 							Sign out
 						</Menu.Item>
