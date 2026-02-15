@@ -11,6 +11,7 @@
 		"generate:routes": "npx @tanstack/router-cli generate"
 	},
 	"dependencies": {
+		"@tanstack/react-query": "^5.62.0",
 		"@mantine/core": "^8.3.14",
 		"@mantine/hooks": "^8.3.14",
 		"@tanstack/react-router": "^1.159.5",
@@ -21,6 +22,9 @@
 		"react-oidc-context": "^3.3.0"
 	},
 	"devDependencies": {
+		"@tanstack/react-devtools": "^0.9.5",
+		"@tanstack/react-query-devtools": "^5.62.0",
+		"@tanstack/react-router-devtools": "^1.159.5",
 		"@eslint/js": "^9.39.1",
 		"@tanstack/router-vite-plugin": "^1.159.5",
 		"@types/node": "^24.10.1",

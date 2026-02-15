@@ -40,7 +40,7 @@ resource "aws_cloudfront_distribution" "dashboard_app_distribution" {
   }
 
   default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "allow-all"
     target_origin_id       = aws_s3_bucket.dashboard_app_bucket.id
@@ -53,4 +53,12 @@ resource "aws_cloudfront_distribution" "dashboard_app_distribution" {
       }
     }
   }
+}
+
+locals {
+  dashboard_cloudfront_url = "https://${aws_cloudfront_distribution.dashboard_app_distribution.domain_name}"
+}
+
+output "dashboard_cloudfront_url" {
+  value = local.dashboard_cloudfront_url
 }

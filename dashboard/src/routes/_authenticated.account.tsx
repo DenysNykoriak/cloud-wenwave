@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Title, Text, Stack, Anchor } from "@mantine/core";
-import { useAuth } from "react-oidc-context";
+import { Title, Text, Stack, Anchor, Loader } from "@mantine/core";
+import { useCurrentUserFetch } from "../hooks/fetch/useCurrentUserFetch";
 
 function AccountComponent() {
-	const { user } = useAuth();
-
-	console.log(user);
+	const { data: accountInfo, isLoading, error } = useCurrentUserFetch();
 
 	return (
 		<Stack gap="md">
@@ -13,12 +11,37 @@ function AccountComponent() {
 				← Home
 			</Anchor>
 			<Title order={1}>Account</Title>
-			<Text>
-				<Text span fw={600}>
-					Username:
-				</Text>{" "}
-				{user?.profile?.["cognito:username"] as string}
-			</Text>
+
+			{isLoading && <Loader size="sm" />}
+
+			{error && (
+				<Text c="red" size="sm">
+					{error.message}
+				</Text>
+			)}
+
+			{accountInfo && (
+				<Stack gap="xs">
+					<Text>
+						<Text span fw={600}>
+							Username:
+						</Text>{" "}
+						{accountInfo.username || accountInfo.sub}
+					</Text>
+					<Text>
+						<Text span fw={600}>
+							Email:
+						</Text>{" "}
+						{accountInfo.email || "Not set"}
+					</Text>
+					<Text>
+						<Text span fw={600}>
+							User ID:
+						</Text>{" "}
+						{accountInfo.sub}
+					</Text>
+				</Stack>
+			)}
 		</Stack>
 	);
 }

@@ -15,8 +15,6 @@ terraform {
   }
 }
 
-
-
 provider "aws" {
   region = "eu-central-1"
 }
@@ -44,6 +42,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
 }
 // ------
 
+data "aws_region" "current" {}
+
 locals {
   app_name = "cloud-wenwave"
 }
@@ -62,4 +62,11 @@ locals {
     ".woff"  = "font/woff"
     ".woff2" = "font/woff2"
   }
+}
+
+module "server-generated-lambdas" {
+  source = "./modules/server-generated-lambdas"
+
+  app_name                     = local.app_name
+  aws_iam_role_lambda_exec_arn = aws_iam_role.lambda_exec.arn
 }
