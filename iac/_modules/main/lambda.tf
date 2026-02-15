@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "lambda_exec_policy" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name               = "${local.app_name}-lambda-exec"
+  name               = "${var.app_name}-lambda-exec"
   assume_role_policy = data.aws_iam_policy_document.lambda_exec_policy.json
 }
 

@@ -1,5 +1,5 @@
 resource "aws_cognito_user_pool" "dashboard_user_pool" {
-  name              = "${local.app_name}-dashboard-user-pool"
+  name              = "${var.app_name}-dashboard-user-pool"
   mfa_configuration = "OPTIONAL"
 
   software_token_mfa_configuration {
@@ -22,19 +22,23 @@ resource "aws_cognito_user_pool" "dashboard_user_pool" {
 
 resource "aws_cognito_user_pool_domain" "dashboard_user_pool_domain" {
   user_pool_id = aws_cognito_user_pool.dashboard_user_pool.id
-  domain       = local.app_name
+  domain       = var.app_name
 }
 
 resource "aws_cognito_user_pool_client" "dashboard_user_pool_client" {
   user_pool_id = aws_cognito_user_pool.dashboard_user_pool.id
-  name         = "${local.app_name}-dashboard-user-pool-client"
-  callback_urls = [
-    "https://${aws_cloudfront_distribution.dashboard_app_distribution.domain_name}",
+  name         = "${var.app_name}-dashboard-user-pool-client"
+  callback_urls = var.allow_local_development ? [
+    local.dashboard_cloudfront_url,
     "http://localhost:3000",
+    ] : [
+    local.dashboard_cloudfront_url,
   ]
-  logout_urls = [
-    "https://${aws_cloudfront_distribution.dashboard_app_distribution.domain_name}",
+  logout_urls = var.allow_local_development ? [
+    local.dashboard_cloudfront_url,
     "http://localhost:3000",
+    ] : [
+    local.dashboard_cloudfront_url,
   ]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
@@ -45,7 +49,6 @@ resource "aws_cognito_user_pool_client" "dashboard_user_pool_client" {
 output "oidc_authority" {
   value = "https://cognito-idp.${data.aws_region.current.name}.amazonaws.com/${aws_cognito_user_pool.dashboard_user_pool.id}"
 }
-
 output "oidc_client_id" {
   value = aws_cognito_user_pool_client.dashboard_user_pool_client.id
 }

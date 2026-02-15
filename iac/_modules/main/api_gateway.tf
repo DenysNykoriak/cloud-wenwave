@@ -1,11 +1,13 @@
 resource "aws_apigatewayv2_api" "api_gateway" {
-  name          = "${local.app_name}-api"
+  name          = "${var.app_name}-api"
   protocol_type = "HTTP"
 
   cors_configuration {
-    allow_origins = [
+    allow_origins = var.allow_local_development ? [
       local.dashboard_cloudfront_url,
-      "http://localhost:3000"
+      "http://localhost:3000",
+      ] : [
+      local.dashboard_cloudfront_url,
     ]
     allow_methods     = ["GET", "OPTIONS", "POST", "PUT", "DELETE", "PATCH", "HEAD"]
     allow_headers     = ["Content-Type", "Authorization"]
@@ -24,7 +26,7 @@ resource "aws_apigatewayv2_authorizer" "cognito_authorizer" {
   api_id           = aws_apigatewayv2_api.api_gateway.id
   authorizer_type  = "JWT"
   identity_sources = ["$request.header.Authorization"]
-  name             = "${local.app_name}-cognito-authorizer"
+  name             = "${var.app_name}-cognito-authorizer"
 
   jwt_configuration {
     audience = [aws_cognito_user_pool_client.dashboard_user_pool_client.id]

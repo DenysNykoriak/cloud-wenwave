@@ -12,6 +12,8 @@ import AdmZip from "adm-zip";
 import Handlebars from "handlebars";
 import path from "path";
 
+const TF_MODULES_PATH = "../iac/_modules";
+
 /**
  * @type {import("esbuild").BuildOptions}
  */
@@ -44,7 +46,7 @@ const entryFiles = getAllTsFiles("src");
 
 //Reset
 rmSync("dist", { recursive: true, force: true });
-rmSync("../iac/modules/server-generated-lambdas", {
+rmSync(path.join(TF_MODULES_PATH, "server-generated-lambdas"), {
 	recursive: true,
 	force: true,
 });
@@ -52,7 +54,7 @@ rmSync("../iac/modules/server-generated-lambdas", {
 //Setup server-generated-lambdas module
 (() => {
 	mkdirSync(
-		path.join(process.cwd(), "../iac/modules/server-generated-lambdas"),
+		path.join(process.cwd(), TF_MODULES_PATH, "server-generated-lambdas"),
 		{
 			recursive: true,
 		},
@@ -70,12 +72,12 @@ rmSync("../iac/modules/server-generated-lambdas", {
 
 	writeFile(
 		"templates/server-generated-lambdas/variables.tf.handlebars",
-		"../iac/modules/server-generated-lambdas/variables.tf",
+		path.join(TF_MODULES_PATH, "server-generated-lambdas/variables.tf"),
 	);
 
 	writeFile(
 		"templates/server-generated-lambdas/main.tf.handlebars",
-		"../iac/modules/server-generated-lambdas/main.tf",
+		path.join(TF_MODULES_PATH, "server-generated-lambdas/main.tf"),
 	);
 })();
 
@@ -127,7 +129,8 @@ for (const file of entryFiles) {
 		writeFileSync(
 			path.join(
 				process.cwd(),
-				"../iac/modules/server-generated-lambdas",
+				TF_MODULES_PATH,
+				"server-generated-lambdas",
 				`${name}_lambda.tf`,
 			),
 			rendered,

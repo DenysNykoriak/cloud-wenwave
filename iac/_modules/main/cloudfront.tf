@@ -1,5 +1,5 @@
 resource "aws_cloudfront_origin_access_control" "dashboard_app_bucket_origin_access_control" {
-  name                              = "${local.app_name}-dashboard-app-bucket-origin-access-control"
+  name                              = "${var.app_name}-dashboard-app-bucket-origin-access-control"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
