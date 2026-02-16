@@ -22,8 +22,9 @@ const esbuildConfig = {
 	minify: process.env.NODE_ENV === "production",
 	sourcemap: process.env.NODE_ENV !== "production",
 	outfile: (file) => {
-		const outputPath = file.replace("src/", "").replace(".ts", ".js");
-		return `dist/${outputPath}`;
+		console.log(file);
+		const base = file.split("/").slice(2).join("_").replace(/-/g, "_").replace(".ts", ".js");
+		return `dist/${base}`;
 	},
 	external: ["@aws-sdk/*"],
 	format: "cjs",
@@ -42,7 +43,7 @@ function getAllTsFiles(dir, fileList = []) {
 	return fileList;
 }
 
-const entryFiles = getAllTsFiles("src");
+const entryFiles = getAllTsFiles("src/lambdas");
 
 //Reset
 rmSync("dist", { recursive: true, force: true });
@@ -107,7 +108,9 @@ for (const file of entryFiles) {
 		const zipFile = `${file}.zip`
 			.replace(/\.(js|ts)/, "")
 			.split("/")
-			.pop();
+			.slice(2)
+			.join("_")
+			.replaceAll("-", "_");
 		zip.addLocalFile(outputFile);
 		zip.writeZip(process.cwd() + "/dist/" + zipFile);
 

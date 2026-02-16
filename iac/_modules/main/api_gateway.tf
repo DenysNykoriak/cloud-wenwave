@@ -37,7 +37,7 @@ resource "aws_apigatewayv2_authorizer" "cognito_authorizer" {
 resource "aws_apigatewayv2_integration" "me_lambda" {
   api_id                 = aws_apigatewayv2_api.api_gateway.id
   integration_type       = "AWS_PROXY"
-  integration_uri        = module.server-generated-lambdas.me_lambda_arn
+  integration_uri        = module.server-generated-lambdas.user_me_lambda_arn
   payload_format_version = "2.0"
 }
 

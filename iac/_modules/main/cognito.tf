@@ -7,7 +7,8 @@ resource "aws_cognito_user_pool" "dashboard_user_pool" {
   }
 
   lambda_config {
-    pre_sign_up = module.server-generated-lambdas.pre-sign-up_lambda_arn
+    pre_sign_up = module.server-generated-lambdas.cognito_pre_sign_up_lambda_arn
+    post_authentication = module.server-generated-lambdas.cognito_post_auth_lambda_arn
   }
 
   account_recovery_setting {

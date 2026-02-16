@@ -13,3 +13,9 @@ variable "aws_iam_role_lambda_exec_arn" {
   description = "The ARN of the IAM role for the Lambda function"
   type        = string
 }
+
+variable "lambda_env" {
+  description = "Environment variables for lambda functions"
+  type        = map(string)
+  default     = {}
+}

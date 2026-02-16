@@ -10,6 +10,10 @@ resource "aws_lambda_function" "{{name}}" {
   handler          = "{{name}}.handler"
   runtime          = "nodejs18.x"
   role             = var.aws_iam_role_lambda_exec_arn
+
+  environment {
+    variables = var.lambda_env
+  }
 }
 
 resource "aws_cloudwatch_log_group" "{{name}}_lambda_log_group" {

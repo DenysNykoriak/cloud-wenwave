@@ -21,4 +21,7 @@ module "server-generated-lambdas" {
 
   app_name                     = var.app_name
   aws_iam_role_lambda_exec_arn = aws_iam_role.lambda_exec.arn
+  lambda_env = {
+    "LAMBDA_DASHBOARD_ACTIVITY_TOPIC_ARN" = aws_sns_topic.dashboard_activity.arn
+  }
 }
