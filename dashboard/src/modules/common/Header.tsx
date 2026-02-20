@@ -43,7 +43,11 @@ const Header = () => {
 							color="red"
 							leftSection={<LogOut size={14} />}
 							onClick={() => {
-								signoutSilent({});
+								signoutSilent({
+									extraQueryParams: {
+										client_id: import.meta.env.VITE_OIDC_CLIENT_ID,
+									},
+								});
 							}}>
 							Sign out
 						</Menu.Item>
